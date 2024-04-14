@@ -4,6 +4,7 @@ import React from "react"
 import { GeoJsonLoader, Map, Point } from "pigeon-maps"
 import { OrangeCountyCities, OrangeCountyCity } from "~/utils/constants";
 import getMinMaxCoords from "~/utils/getMinMaxCoords";
+import { env } from "~/env";
 
 interface MapGeoJsonProps {
   setHoveredCity: (city: string | null) => void;
@@ -36,8 +37,12 @@ interface GeoJsonCallbackProps {
 }
 
 const geoJsonLink = 'https://raw.githubusercontent.com/dlustre/geodle/main/OC_Cities_Land_Boundaries.geojson';
+const MAP_ID = 'basic-v2'
 
-// TODO: change map tiler to something nicer
+function mapTiler(x: number, y: number, z: number, dpr: number | undefined) {
+  return `https://api.maptiler.com/maps/${MAP_ID}/256/${z}/${x}/${y}${dpr && dpr >= 2 ? '@2x' : ''}.png?key=${env.NEXT_PUBLIC_MAP_TILER_KEY}`
+}
+
 export function MyMapGeoJson({
   setHoveredCity,
   selectedCity,
@@ -49,6 +54,7 @@ export function MyMapGeoJson({
 }: MapGeoJsonProps) {
   return (
     <Map
+      provider={mapTiler}
       height={500}
       width={500}
       defaultCenter={[33.6405, -117.8443]}
