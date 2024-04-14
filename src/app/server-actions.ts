@@ -31,7 +31,7 @@ const ResponseSchema = z.object({
 
 type Response = z.infer<typeof ResponseSchema>;
 
-export async function getCityFromCoords(lat: string, long: string): Promise<Response["Records"][0] | undefined> {
+export async function getGeoInfoFromCoords(lat: string, long: string): Promise<Response["Records"][0] | undefined> {
     try {
         const queryParams = {
             id: env.API_KEY,
@@ -49,7 +49,6 @@ export async function getCityFromCoords(lat: string, long: string): Promise<Resp
         const res = await fetch(urlString);
         const data: Response = ResponseSchema.parse(await res.json());
 
-        console.log(data);
         return data.Records[0];
     } catch (err) {
         console.error(err);
