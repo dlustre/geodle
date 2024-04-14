@@ -2,13 +2,15 @@
 
 import React from "react"
 import { GeoJsonLoader, Map, Point } from "pigeon-maps"
-import { orange_county_cities } from "~/utils/constants";
-import { getMinMaxCoords } from "~/app/page";
+import { OrangeCountyCities, OrangeCountyCity } from "~/utils/constants";
+import getMinMaxCoords from "~/utils/getMinMaxCoords";
 
 interface MapGeoJsonProps {
   setHoveredCity: (city: string | null) => void;
   selectedCity: string | null;
   setSelectedCity: (city: string | null) => void;
+  guessedCities: string[];
+  targetCity: string | null;
   coords: Point | null;
   setCoords: (center: Point | null) => void;
 }
@@ -18,7 +20,7 @@ interface GeoJson {
   features: {
     type: string;
     properties: {
-      NAME: string;
+      NAME: OrangeCountyCity;
     };
     geometry: {
       type: string;
@@ -39,7 +41,9 @@ const geoJsonLink = 'https://raw.githubusercontent.com/dlustre/geodle/main/OC_Ci
 export function MyMapGeoJson({
   setHoveredCity,
   selectedCity,
+  targetCity,
   setSelectedCity,
+  guessedCities,
   coords,
   setCoords,
 }: MapGeoJsonProps) {
@@ -54,18 +58,23 @@ export function MyMapGeoJson({
       <GeoJsonLoader
         link={geoJsonLink}
         onMouseOver={({ payload }: GeoJsonCallbackProps) => {
-          if (!orange_county_cities.includes(payload.properties.NAME)) return;
           setHoveredCity(payload.properties.NAME);
         }}
+        onMouseOut={() => {
+          setHoveredCity(null);
+        }}
         onClick={({ payload }: GeoJsonCallbackProps) => {
-          if (!orange_county_cities.includes(payload.properties.NAME)) return;
+          if (!OrangeCountyCities.includes(payload.properties.NAME)) return;
           setSelectedCity(payload.properties.NAME);
           const { minLat, maxLat, minLong, maxLong } = getMinMaxCoords(payload.properties.NAME)!;
           setCoords([(minLat + maxLat) / 2, (minLong + maxLong) / 2]);
         }}
         styleCallback={(feature: GeoJson["features"][0], hover: boolean) => {
-          if (!orange_county_cities.includes(feature.properties.NAME)) return {};
-          if (selectedCity === feature.properties.NAME) return { fill: '#2957d8b5', strokeWidth: '2' };
+          const guessedCity = feature.properties.NAME;
+          if (!OrangeCountyCities.includes(guessedCity)) return {};
+          if (guessedCities.includes(guessedCity) && guessedCity === targetCity) return { fill: '#28e63299', strokeWidth: '2' };
+          if (guessedCities.includes(guessedCity)) return { fill: '#e6323299', strokeWidth: '2' };
+          if (selectedCity === guessedCity) return { fill: '#2957d8b5', strokeWidth: '2' };
           return hover
             ? { fill: '#93c0d099', strokeWidth: '2' }
             : { fill: '#d4e6ec99', strokeWidth: '1' }

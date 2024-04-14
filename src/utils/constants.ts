@@ -1,4 +1,4 @@
-export const orange_county_cities = [
+export const OrangeCountyCities = [
     "Aliso Viejo",
     "Anaheim",
     "Brea",
@@ -34,3 +34,5 @@ export const orange_county_cities = [
     "Westminster",
     "Yorba Linda",
 ] as const;
+
+export type OrangeCountyCity = typeof OrangeCountyCities[number];
