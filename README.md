@@ -2,7 +2,7 @@
 
 ### The best way to learn about Orange County 🎯
 
-### Try it out [here!](geodle-seven.vercel.app)
+### Try it out [here!](https://geodle-seven.vercel.app/)
 
 ![original](https://github.com/dlustre/geodle/assets/83149801/3d0595bb-31f3-4482-b522-f5d87d9c2359)
 
